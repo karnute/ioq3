@@ -64,10 +64,9 @@ cvar_t	*sv_clientsPerIp;
 
 serverBan_t serverBans[SERVER_MAXBANS];
 int serverBansCount = 0;
-cvar_t	*sv_demonotice;				// notice to print to a client being recorded server-side
-cvar_t 	*sv_demofolder;				//@Barbatos - the name of the folder that contains server-side demos
-
-cvar_t	*sv_demonotice;		// notice to print to a client being recorded server-side
+cvar_t	*sv_demonotice;			// notice to print to a client being recorded server-side
+cvar_t	*sv_demofolder;			//@Barbatos - the name of the folder that contains server-side demos
+cvar_t	*sv_autoRecordDemo;
 cvar_t  *sv_tellprefix;
 cvar_t  *sv_sayprefix;
 
@@ -231,7 +230,7 @@ void QDECL SV_SendServerCommand(client_t *cl, const char *fmt, ...) {
 		Com_Printf ("broadcast: %s\n", SV_ExpandNewlines((char *)message) );
 	}
 
-	// send the data to all relevent clients
+	// send the data to all relevant clients
 	for (j = 0, client = svs.clients; j < sv_maxclients->integer ; j++, client++) {
 		SV_AddServerCommand( client, (char *)message );
 	}
@@ -767,10 +766,10 @@ static void SVC_RemoteCommand( netadr_t from, msg_t *msg ) {
 		}
 
 		valid = qfalse;
-		Com_Printf ("Bad rcon from %s: %s\n", NET_AdrToString (from), Cmd_ArgsFrom(2) );
+		Com_Printf ("Bad rcon from %s: %s\n", NET_AdrToStringwPort (from), Cmd_ArgsFrom(2) );
 	} else {
 		valid = qtrue;
-		Com_Printf ("Rcon from %s: %s\n", NET_AdrToString (from), Cmd_ArgsFrom(2) );
+		Com_Printf ("Rcon from %s: %s\n", NET_AdrToStringwPort (from), Cmd_ArgsFrom(2) );
 	}
 
 	// start redirecting all print outputs to the packet
@@ -838,7 +837,7 @@ static void SV_ConnectionlessPacket( netadr_t from, msg_t *msg ) {
 	Cmd_TokenizeString( s );
 
 	c = Cmd_Argv(0);
-	Com_DPrintf ("SV packet %s : %s\n", NET_AdrToString(from), c);
+	Com_DPrintf ("SV packet %s : %s\n", NET_AdrToStringwPort(from), c);
 
 	if (!Q_stricmp(c, "getstatus")) {
 		SVC_Status( from );
@@ -865,7 +864,7 @@ static void SV_ConnectionlessPacket( netadr_t from, msg_t *msg ) {
 		// sequenced messages to the old client
 	} else {
 		Com_DPrintf ("bad connectionless packet from %s:\n%s\n",
-			NET_AdrToString (from), s);
+			NET_AdrToStringwPort (from), s);
 	}
 }
 

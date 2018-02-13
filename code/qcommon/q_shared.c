@@ -746,13 +746,14 @@ qboolean Q_isintegral( float f )
 	return (int)f == f;
 }
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 /*
 =============
 Q_vsnprintf
- 
+
 Special wrapper function for Microsoft's broken _vsnprintf() function.
-MinGW comes with its own snprintf() which is not broken.
+MinGW comes with its own vsnprintf() which is not broken. mingw-w64
+however, uses Microsoft's broken _vsnprintf() function.
 =============
 */
 
@@ -988,6 +989,18 @@ int Q_CountChar(const char *string, char tocount)
 	}
 	
 	return count;
+}
+
+char *Q_SizeFormat(float number, float factor) {
+	if (number > (factor * factor * factor * factor))
+		return va("%.02f T", number / (factor * factor * factor * factor));
+	if (number > (factor * factor * factor))
+		return va("%.02f G", number / (factor * factor * factor));
+	if (number > (factor * factor))
+		return va("%.02f M", number / (factor * factor));
+	if (number > factor)
+		return va("%i K", (int)(number / factor));
+	return va("%i ", (int)number);
 }
 
 int QDECL Com_sprintf(char *dest, int size, const char *fmt, ...)

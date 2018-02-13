@@ -71,6 +71,10 @@ disabling usage of, for instance, funstuff. This can be solved by setting the
 `sv_extraPaks` cvar to a space-separated list of pk3 names that you don't want
 to exclude from the search path
 
+**Warning:** Setting this has an undesirable side-effect for clients.
+The voting UI for map changes will not display custom maps (unless they're
+whitelisted in `sv_extraPaks`).
+
 ### `fs_lowPriorityDownloads`
 When set to 1 (the default), this puts the maps in the `download` folder at a
 lower priority than anything else.
@@ -156,6 +160,8 @@ exec server.cfg // Start server with the specified config file
 - Non-ascii keys can now be mapped on all platforms
   (using the `WORLD_n` key names)
 
+- Ctrl-V and Shift-Insert can be used to paste text on all platforms.
+
 ## Other changes
 
 - Download UI is improved a bit
@@ -168,7 +174,8 @@ exec server.cfg // Start server with the specified config file
 - `/map` will now accept to load maps that are not in a pure pak
   (when connected to a pure server)
 
-- Ctrl-V and Shift-Insert can now be used to paste into UI text fields (not just the console).
+- Added `sv_autoRecordDemo`cvar to automatically create a server demo of every
+  player that connects.
 
 ## Security fixes
 

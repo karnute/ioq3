@@ -433,7 +433,7 @@ void S_SpatializeOrigin (vec3_t origin, int master_vol, int *left_vol, int *righ
 
 	const float dist_mult = SOUND_ATTENUATE;
 	
-	// calculate stereo seperation and distance attenuation
+	// calculate stereo separation and distance attenuation
 	VectorSubtract(origin, listener_origin, source_vec);
 
 	dist = VectorNormalize(source_vec);
@@ -561,9 +561,9 @@ static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, s
 //	Com_Printf("playing %s\n", sfx->soundName);
 	// pick a channel to play on
 
-	allowed = 4;
+	allowed = 16;
 	if (entityNum == listener_number) {
-		allowed = 8;
+		allowed = 32;
 	}
 
 	fullVolume = qfalse;
@@ -575,17 +575,16 @@ static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, s
 	inplay = 0;
 	for ( i = 0; i < MAX_CHANNELS ; i++, ch++ ) {		
 		if (ch->entnum == entityNum && ch->thesfx == sfx) {
-			if (time - ch->allocTime < 50) {
-//				if (Cvar_VariableValue( "cg_showmiss" )) {
-//					Com_Printf("double sound start\n");
-//				}
+			if (time - ch->allocTime < 30) {
+				Com_DPrintf(S_COLOR_YELLOW "S_StartSound: Double start (%d ms < 30 ms) for %s\n", time - ch->allocTime, sfx->soundName);
 				return;
 			}
 			inplay++;
 		}
 	}
 
-	if (inplay>allowed) {
+	if (inplay > allowed) {
+		Com_DPrintf(S_COLOR_YELLOW "S_StartSound: %s hit the concurrent channels limit (%d)\n", sfx->soundName, allowed);
 		return;
 	}
 
@@ -622,13 +621,14 @@ static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, s
 					}
 				}
 				if (chosen == -1) {
-					Com_Printf("dropping sound\n");
+					Com_DPrintf(S_COLOR_YELLOW "S_StartSound: No more channels free for %s\n", sfx->soundName);
 					return;
 				}
 			}
 		}
 		ch = &s_channels[chosen];
 		ch->allocTime = sfx->lastTimeUsed;
+		Com_DPrintf(S_COLOR_YELLOW "S_StartSound: No more channels free for %s, dropping earliest sound: %s\n", sfx->soundName, ch->thesfx->soundName);
 	}
 
 	if (origin) {
