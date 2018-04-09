@@ -872,10 +872,10 @@ void SV_Init (void)
 
 	// serverinfo vars
 	Cvar_Get ("dmflags", "0", CVAR_SERVERINFO);
-	Cvar_Get ("fraglimit", "20", CVAR_SERVERINFO);
-	Cvar_Get ("timelimit", "0", CVAR_SERVERINFO);
+	Cvar_Get ("fraglimit", "20", CVAR_SERVERINFO | CVAR_INFOSECLONG);
+	Cvar_Get ("timelimit", "0", CVAR_SERVERINFO | CVAR_INFOSECLONG);
 	sv_gametype = Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH );
-	Cvar_Get ("sv_keywords", "", CVAR_SERVERINFO);
+	Cvar_Get ("sv_keywords", "", CVAR_SERVERINFO | CVAR_INFOSECLONG);
 	sv_mapname = Cvar_Get ("mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM);
 	sv_privateClients = Cvar_Get ("sv_privateClients", "0", CVAR_SERVERINFO);
 	sv_hostname = Cvar_Get ("sv_hostname", "noname", CVAR_SERVERINFO | CVAR_ARCHIVE );
@@ -897,10 +897,10 @@ void SV_Init (void)
 	Cvar_CheckRange(sv_voip, 0, 1, qtrue);
 	sv_voipProtocol = Cvar_Get("sv_voipProtocol", sv_voip->integer ? "opus" : "", CVAR_SYSTEMINFO | CVAR_ROM );
 #endif
-	Cvar_Get ("sv_paks", "", CVAR_SYSTEMINFO | CVAR_ROM );
-	Cvar_Get ("sv_pakNames", "", CVAR_SYSTEMINFO | CVAR_ROM );
-	Cvar_Get ("sv_referencedPaks", "", CVAR_SYSTEMINFO | CVAR_ROM );
-	Cvar_Get ("sv_referencedPakNames", "", CVAR_SYSTEMINFO | CVAR_ROM );
+	Cvar_Get ("sv_paks", "", CVAR_SYSTEMINFO | CVAR_ROM | CVAR_INFOSECLONG );
+	Cvar_Get ("sv_pakNames", "", CVAR_SYSTEMINFO | CVAR_ROM | CVAR_INFOSECLONG );
+	Cvar_Get ("sv_referencedPaks", "", CVAR_SYSTEMINFO | CVAR_ROM | CVAR_INFOSECLONG );
+	Cvar_Get ("sv_referencedPakNames", "", CVAR_SYSTEMINFO | CVAR_ROM | CVAR_INFOSECLONG );
 
 	// server vars
 	sv_rconPassword = Cvar_Get ("rconPassword", "", CVAR_TEMP );
@@ -911,7 +911,7 @@ void SV_Init (void)
 	Cvar_Get ("nextmap", "", CVAR_TEMP );
 	Cvar_Get ("sv_cheatMode", "0", CVAR_TEMP );
 
-	Cvar_Get ("sv_dlURL", "", CVAR_SERVERINFO | CVAR_ARCHIVE);
+	Cvar_Get ("sv_dlURL", "", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_INFOSECLONG );
 	
 	sv_master[0] = Cvar_Get("sv_master1", MASTER_SERVER_NAME, 0);
 	sv_master[1] = Cvar_Get("sv_master2", "master.ioquake3.org", 0);

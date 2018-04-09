@@ -2690,7 +2690,7 @@ void Com_Init( char *commandLine ) {
 #endif
 
 	s = va("%s %s %s", Q3_VERSION, PLATFORM_STRING, PRODUCT_DATE );
-	com_version = Cvar_Get ("version", s, CVAR_ROM | CVAR_SERVERINFO );
+	com_version = Cvar_Get ("version", s, CVAR_ROM | CVAR_SERVERINFO | CVAR_INFOSECLONG );
 	com_gamename = Cvar_Get("com_gamename", GAMENAME_FOR_MASTER, CVAR_SERVERINFO | CVAR_INIT);
 	com_protocol = Cvar_Get("com_protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVERINFO | CVAR_INIT);
 #ifdef LEGACY_PROTOCOL

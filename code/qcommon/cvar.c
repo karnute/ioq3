@@ -886,14 +886,14 @@ void Cvar_Set_f( void ) {
 			break;
 		case 'u':
 			if( !( v->flags & CVAR_USERINFO ) ) {
-				v->flags |= CVAR_USERINFO;
-				cvar_modifiedFlags |= CVAR_USERINFO;
+				v->flags |= CVAR_USERINFO | CVAR_INFOSECLONG;
+				cvar_modifiedFlags |= CVAR_USERINFO | CVAR_INFOSECLONG;
 			}
 			break;
 		case 's':
 			if( !( v->flags & CVAR_SERVERINFO ) ) {
-				v->flags |= CVAR_SERVERINFO;
-				cvar_modifiedFlags |= CVAR_SERVERINFO;
+				v->flags |= CVAR_SERVERINFO | CVAR_INFOSECLONG;
+				cvar_modifiedFlags |= CVAR_SERVERINFO | CVAR_INFOSECLONG;
 			}
 			break;
 	}
@@ -1249,7 +1249,14 @@ char *Cvar_InfoString(int bit)
 
 	for(var = cvar_vars; var; var = var->next)
 	{
-		if(var->name && (var->flags & bit))
+		if(var->name && (var->flags & bit) && !(var->flags & CVAR_INFOSECLONG))
+			Info_SetValueForKey (info, var->name, var->string);
+	}
+
+	// secondary or potential long cvar in a second batch in case they overflow
+	for(var = cvar_vars; var; var = var->next)
+	{
+		if(var->name && (var->flags & bit) && (var->flags & CVAR_INFOSECLONG))
 			Info_SetValueForKey (info, var->name, var->string);
 	}
 
@@ -1272,9 +1279,17 @@ char *Cvar_InfoString_Big(int bit)
 
 	for (var = cvar_vars; var; var = var->next)
 	{
-		if(var->name && (var->flags & bit))
+		if(var->name && (var->flags & bit) && !(var->flags & CVAR_INFOSECLONG))
 			Info_SetValueForKey_Big (info, var->name, var->string);
 	}
+
+	// secondary or potential long cvar in a second batch in case they overflow
+	for (var = cvar_vars; var; var = var->next)
+	{
+		if(var->name && (var->flags & bit) && (var->flags & CVAR_INFOSECLONG))
+			Info_SetValueForKey_Big (info, var->name, var->string);
+	}
+
 	return info;
 }
 
