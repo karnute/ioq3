@@ -3744,20 +3744,20 @@ void CL_Init( void ) {
 #ifdef USE_AUTH
 	cl_auth_engine = Cvar_Get( "cl_auth_engine", "1", CVAR_TEMP | CVAR_ROM);
 	cl_auth = Cvar_Get("cl_auth", "0", CVAR_TEMP | CVAR_ROM);
-	authc = Cvar_Get("authc", "0", CVAR_TEMP | CVAR_USERINFO);
-	authl = Cvar_Get("authl", "", CVAR_TEMP | CVAR_USERINFO);
+	authc = Cvar_Get("authc", "0", CVAR_TEMP | CVAR_USERINFO | CVAR_INFOPRIMARY);
+	authl = Cvar_Get("authl", "", CVAR_TEMP | CVAR_USERINFO | CVAR_INFOPRIMARY);
 #endif
 
 	// userinfo
-	Cvar_Get ("name", "UnnamedPlayer", CVAR_USERINFO | CVAR_ARCHIVE );
-	cl_rate = Cvar_Get ("rate", "25000", CVAR_USERINFO | CVAR_ARCHIVE );
-	Cvar_Get ("snaps", "20", CVAR_USERINFO | CVAR_ARCHIVE );
+	Cvar_Get ("name", "UnnamedPlayer", CVAR_USERINFO | CVAR_INFOPRIMARY | CVAR_ARCHIVE );
+	cl_rate = Cvar_Get ("rate", "25000", CVAR_USERINFO | CVAR_INFOPRIMARY | CVAR_ARCHIVE );
+	Cvar_Get ("snaps", "20", CVAR_USERINFO | CVAR_INFOPRIMARY | CVAR_ARCHIVE );
 	Cvar_Get ("color1",  "4", CVAR_USERINFO | CVAR_ARCHIVE );
 	Cvar_Get ("color2", "5", CVAR_USERINFO | CVAR_ARCHIVE );
 	Cvar_Get ("handicap", "100", CVAR_USERINFO | CVAR_ARCHIVE );
 	Cvar_Get ("sex", "male", CVAR_USERINFO | CVAR_ARCHIVE );
-	Cvar_Get ("password", "", CVAR_USERINFO);
-	Cvar_Get ("cg_predictItems", "1", CVAR_USERINFO | CVAR_ARCHIVE );
+	Cvar_Get ("password", "", CVAR_USERINFO | CVAR_INFOPRIMARY);
+	Cvar_Get ("cg_predictItems", "1", CVAR_USERINFO | CVAR_INFOPRIMARY | CVAR_ARCHIVE );
 
 #ifdef USE_MUMBLE
 	cl_useMumble = Cvar_Get ("cl_useMumble", "0", CVAR_ARCHIVE | CVAR_LATCH);
@@ -3775,7 +3775,7 @@ void CL_Init( void ) {
 
 	cl_voip = Cvar_Get ("cl_voip", "1", CVAR_ARCHIVE);
 	Cvar_CheckRange( cl_voip, 0, 1, qtrue );
-	cl_voipProtocol = Cvar_Get ("cl_voipProtocol", cl_voip->integer ? "opus" : "", CVAR_USERINFO | CVAR_ROM);
+	cl_voipProtocol = Cvar_Get ("cl_voipProtocol", cl_voip->integer ? "opus" : "", CVAR_USERINFO | CVAR_INFOPRIMARY | CVAR_ROM);
 #endif
 
 
@@ -3834,7 +3834,7 @@ void CL_Init( void ) {
 	Cvar_Set( "cl_running", "1" );
 
 	CL_GenerateQKey();
-	Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
+	Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_INFOPRIMARY | CVAR_ROM );
 	CL_UpdateGUID( NULL, 0 );
 
 	Com_Printf( "----- Client Initialization Complete -----\n" );

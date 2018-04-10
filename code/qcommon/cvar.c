@@ -1249,7 +1249,13 @@ char *Cvar_InfoString(int bit)
 
 	for(var = cvar_vars; var; var = var->next)
 	{
-		if(var->name && (var->flags & bit))
+		if(var->name && (var->flags & bit) && (var->flags & CVAR_INFOPRIMARY))
+			Info_SetValueForKey (info, var->name, var->string);
+	}
+	// secondary or potential long cvar in a second batch in case they overflow
+	for(var = cvar_vars; var; var = var->next)
+	{
+		if(var->name && (var->flags & bit) && !(var->flags & CVAR_INFOPRIMARY))
 			Info_SetValueForKey (info, var->name, var->string);
 	}
 
@@ -1272,7 +1278,13 @@ char *Cvar_InfoString_Big(int bit)
 
 	for (var = cvar_vars; var; var = var->next)
 	{
-		if(var->name && (var->flags & bit))
+		if(var->name && (var->flags & bit) && (var->flags & CVAR_INFOPRIMARY))
+			Info_SetValueForKey_Big (info, var->name, var->string);
+	}
+	// secondary or potential long cvar in a second batch in case they overflow
+	for (var = cvar_vars; var; var = var->next)
+	{
+		if(var->name && (var->flags & bit) && !(var->flags & CVAR_INFOPRIMARY))
 			Info_SetValueForKey_Big (info, var->name, var->string);
 	}
 	return info;
@@ -1498,7 +1510,7 @@ void Cvar_Init (void)
 	Com_Memset(cvar_indexes, '\0', sizeof(cvar_indexes));
 	Com_Memset(hashTable, '\0', sizeof(hashTable));
 
-	cvar_cheats = Cvar_Get("sv_cheats", "1", CVAR_ROM | CVAR_SYSTEMINFO );
+	cvar_cheats = Cvar_Get("sv_cheats", "1", CVAR_ROM | CVAR_SYSTEMINFO | CVAR_INFOPRIMARY);
 
 	Cmd_AddCommand ("print", Cvar_Print_f);
 	Cmd_AddCommand ("toggle", Cvar_Toggle_f);
