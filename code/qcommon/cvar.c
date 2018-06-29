@@ -569,6 +569,12 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 			return var;
 		}
 
+		if ((var->flags & CVAR_CHEAT) && !cvar_cheats->integer)
+		{
+			Com_Printf ("%s is cheat protected.\n", var_name);
+			return var;
+		}
+		
 		if (var->flags & CVAR_LATCH)
 		{
 			if (var->latchedString)
@@ -583,19 +589,12 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 					return var;
 			}
 
-			Com_Printf ("%s will be changed upon restarting.\n", var_name);
+			Com_Printf ("%s will be changed upon reloading.\n", var_name);
 			var->latchedString = CopyString(value);
 			var->modified = qtrue;
 			var->modificationCount++;
 			return var;
 		}
-
-		if ( (var->flags & CVAR_CHEAT) && !cvar_cheats->integer )
-		{
-			Com_Printf ("%s is cheat protected.\n", var_name);
-			return var;
-		}
-
 	}
 	else
 	{

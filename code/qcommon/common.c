@@ -94,6 +94,7 @@ cvar_t	*com_legacyprotocol;
 cvar_t	*com_basegame;
 cvar_t  *com_homepath;
 cvar_t	*com_busyWait;
+cvar_t	*com_logfileName;
 #ifndef DEDICATED
 cvar_t  *con_autochat;
 #endif
@@ -209,7 +210,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 			time( &aclock );
 			newtime = localtime( &aclock );
 
-			logfile = FS_FOpenFileWrite( "qconsole.log" );
+			logfile = FS_FOpenFileWrite( com_logfileName->string );
 			
 			if(logfile)
 			{
@@ -224,7 +225,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 			}
 			else
 			{
-				Com_Printf("Opening qconsole.log failed!\n");
+				Com_Printf("Opening %s failed!\n", com_logfileName->string);
 				Cvar_SetValue("logfile", 0);
 			}
 
@@ -1051,7 +1052,7 @@ void *Z_TagMalloc( int size, int tag ) {
 	base->tag = tag;			// no longer a free block
 	
 	zone->rover = base->next;	// next allocation will start looking here
-	zone->used += base->size;	//
+	zone->used += base->size;
 	
 	base->id = ZONEID;
 
@@ -2639,7 +2640,7 @@ void Com_Init( char *commandLine ) {
 
   // get dedicated here for proper hunk megs initialization
 #ifdef DEDICATED
-	com_dedicated = Cvar_Get ("dedicated", "1", CVAR_INIT);
+	com_dedicated = Cvar_Get ("dedicated", "2", CVAR_INIT);
 	Cvar_CheckRange( com_dedicated, 1, 2, qtrue );
 #else
 	com_dedicated = Cvar_Get ("dedicated", "0", CVAR_LATCH);
@@ -2656,10 +2657,11 @@ void Com_Init( char *commandLine ) {
 	// init commands and vars
 	//
 	com_altivec = Cvar_Get ("com_altivec", "1", CVAR_ARCHIVE);
-	com_maxfps = Cvar_Get ("com_maxfps", "85", CVAR_ARCHIVE);
+	com_maxfps = Cvar_Get ("com_maxfps", "125", CVAR_ARCHIVE);
 	com_blood = Cvar_Get ("com_blood", "1", CVAR_ARCHIVE);
 
 	com_logfile = Cvar_Get ("logfile", "0", CVAR_TEMP );
+	com_logfileName = Cvar_Get("logfileName", "qconsole.log", CVAR_ARCHIVE);
 
 	com_timescale = Cvar_Get ("timescale", "1", CVAR_CHEAT | CVAR_SYSTEMINFO );
 	com_fixedtime = Cvar_Get ("fixedtime", "0", CVAR_CHEAT);

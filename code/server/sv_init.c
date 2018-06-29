@@ -374,16 +374,12 @@ static void SV_ClearServer(void) {
 
 /*
 ================
-SV_TouchCGame
-
-  touch the cgame.vm so that a pure client can load it if it's in a separate pk3
+SV_TouchFile
 ================
 */
-static void SV_TouchCGame(void) {
+static void SV_TouchFile( const char *filename ) {
 	fileHandle_t	f;
-	char filename[MAX_QPATH];
 
-	Com_sprintf( filename, sizeof(filename), "vm/%s.qvm", "cgame" );
 	FS_FOpenFileRead( filename, &f, qfalse );
 	if ( f ) {
 		FS_FCloseFile( f );
@@ -760,11 +756,11 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	svs.time += 100;
 
 	if ( sv_pure->integer ) {
-		// if a dedicated pure server we need to touch the cgame because it could be in a
-		// separate pk3 file and the client will need to load the latest cgame.qvm
-		if ( com_dedicated->integer ) {
-			SV_TouchCGame();
-		}
+		// we need to touch the cgame and ui qvm because they could be in
+		// separate pk3 files and the client will need to download the pk3
+		// files with the latest cgame and ui qvm to pass the pure check
+		SV_TouchFile( "vm/cgame.qvm" );
+		SV_TouchFile( "vm/ui.qvm" );
 
 		// Update latched value
 		Cvar_Get ("sv_extraPaks", "", CVAR_ARCHIVE | CVAR_LATCH);
@@ -871,7 +867,7 @@ void SV_Init (void)
 	SV_AddOperatorCommands ();
 
 	// serverinfo vars
-	Cvar_Get ("dmflags", "0", CVAR_SERVERINFO);
+	Cvar_Get ("dmflags", "0", CVAR_ARCHIVE);
 	Cvar_Get ("fraglimit", "20", CVAR_SERVERINFO);
 	Cvar_Get ("timelimit", "0", CVAR_SERVERINFO);
 	sv_gametype = Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH );
@@ -886,7 +882,7 @@ void SV_Init (void)
 	sv_minPing = Cvar_Get ("sv_minPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_maxPing = Cvar_Get ("sv_maxPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_floodProtect = Cvar_Get ("sv_floodProtect", "2", CVAR_ARCHIVE | CVAR_SERVERINFO );
-	sv_clientsPerIp = Cvar_Get ("sv_clientsPerIp", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
+	sv_clientsPerIp = Cvar_Get ("sv_clientsPerIp", "3", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_newpurelist = Cvar_Get ("sv_newpurelist", "0", CVAR_ARCHIVE );
 
 	// systeminfo

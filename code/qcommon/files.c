@@ -2521,19 +2521,22 @@ void FS_GetModDescription( const char *modDir, char *description, int descriptio
 	int				nDescLen;
 	FILE			*file;
 
-	Com_sprintf( descPath, sizeof ( descPath ), "%s/description.txt", modDir );
+	Com_sprintf( descPath, sizeof ( descPath ), "%s%cdescription.txt", modDir, PATH_SEP );
 	nDescLen = FS_SV_FOpenFileRead( descPath, &descHandle );
 
-	if ( nDescLen > 0 && descHandle ) {
+	if ( nDescLen > 0 ) {
 		file = FS_FileForHandle(descHandle);
 		Com_Memset( description, 0, descriptionLen );
 		nDescLen = fread(description, 1, descriptionLen, file);
 		if (nDescLen >= 0) {
 			description[nDescLen] = '\0';
 		}
-		FS_FCloseFile(descHandle);
 	} else {
 		Q_strncpyz( description, modDir, descriptionLen );
+	}
+
+	if ( descHandle ) {
+		FS_FCloseFile( descHandle );
 	}
 }
 
@@ -3447,12 +3450,8 @@ static void FS_Startup( const char *gameName )
 	}
 
 	fs_homepath = Cvar_Get ("fs_homepath", homePath, CVAR_INIT|CVAR_PROTECTED );
-#ifdef USE_AUTH
+
 	fs_gamedirvar = Cvar_Get ("fs_game", BASEGAME, CVAR_INIT|CVAR_SYSTEMINFO );
-	// mickael9: AUTH system requires fs_game to be set
-#else
-	fs_gamedirvar = Cvar_Get ("fs_game", "", CVAR_INIT|CVAR_SYSTEMINFO );
-#endif
 
 	if (!gameName[0]) {
 		Cvar_ForceReset( "com_basegame" );
